@@ -130,7 +130,6 @@ def create_pdf(p1, p2, trim, year=True, send_email=False):
             data.append([k, table.loc[p1][v]])
             yS += 1
 
-
     date = time.strftime("%d.%m.%Y")
     txt1 = f"CONT DE PLATA din {date}"
     txt2 = u'Furnizor: S.A. "Grupa Financiară", IDNO: 1002600054323'
@@ -173,7 +172,8 @@ def create_pdf(p1, p2, trim, year=True, send_email=False):
     # Zagolovok
     pdf.set_font("DejaVu", size=13, style="B")
     for item in data_z:
-        pdf.cell(col_width, row_height * spacing, txt=item, border=1, align="C")
+        pdf.cell(col_width, row_height * spacing, txt=item, border=1,
+                 align="C")
     pdf.ln(row_height * spacing)
 
     pdf.set_font("DejaVu", size=13)
@@ -195,7 +195,8 @@ def create_pdf(p1, p2, trim, year=True, send_email=False):
     pdf.multi_cell(0, 4, txt_ps2)
     pdf.multi_cell(0, 4, txt_ps3)
     pdf.image('/Users/nd/Desktop/baza/stamp.png', x=xS, y=67 + yS * 6, w=38)
-    pdf.image('/Users/nd/Desktop/baza/sign.png', x=xS - 25, y=80 + yS * 6, w=13)
+    pdf.image('/Users/nd/Desktop/baza/sign.png', x=xS - 25, y=80 + yS * 6,
+              w=13)
 
     if year:
         # вывод счёта за год
@@ -273,7 +274,7 @@ def create_pdf(p1, p2, trim, year=True, send_email=False):
         if status:
             email_sender = "grupa_financiara@mail.ru"
             email_password = "p0KaR11DGgTDCNycPfQs"  # нужно сгенерировать новый пароль https://id.mail.ru/security
-            email_receiver = p2 # список адресов
+            email_receiver = p2  # список адресов
 
             body = """
             ВНИМАНИЕ!!! Налоговая накладная на наши услуги отписывается посредством системы "E-FACTURA" по длинному циклу. Просим своевременно подписывать её. Все вопросы и пожелания принимаются по телефону 022-27-23-13 (бухгалтерия).
@@ -284,7 +285,7 @@ def create_pdf(p1, p2, trim, year=True, send_email=False):
             """
             em = MIMEMultipart()
             em['From'] = email_sender
-            em['To'] =  email_receiver
+            em['To'] = email_receiver
             em['subject'] = "Cont pentru achitarea serviciilor SA Grupa " \
                             "Financiara (SA " + table.loc[p1][1] + ")"
             em.attach(MIMEText(body, 'plain'))
@@ -293,7 +294,7 @@ def create_pdf(p1, p2, trim, year=True, send_email=False):
             fn = "/Users/nd/Desktop/baza/Conturi/" + filename
             # attachment = open(fn, "rb")
             attachment = open(path_file, "rb")
-            part = MIMEBase('application', 'pdf')   #-----------------------
+            part = MIMEBase('application', 'pdf')  # <<<--------------------
             part.set_payload(attachment.read())
             encoders.encode_base64(part)
             part.add_header('Content-Disposition',
@@ -395,12 +396,14 @@ def conts_for_all():
 
     for i in range(2, len(table) - 1):
         trim_column = [49, 16, 27, 38, 49]  # Номера столбцов с задолженностями
-        if str(table.loc[i][2]) != "STOP" and str(table.loc[i][2]) != "EXPIRAT":
+        if str(table.loc[i][2]) != "STOP" and str(
+                table.loc[i][2]) != "EXPIRAT":
             if str(table.loc[i][trim_column[trim]]) != 'nan' and int(
                     table.loc[i][trim_column[trim]]) > 0:
                 result = search_SA(str(table.loc[i][1]))
                 # print(result)
-                create_pdf(result[0], result[1], trim, emitent_year, send_email)
+                create_pdf(result[0], result[1], trim, emitent_year,
+                           send_email)
     save_report()
 
 
@@ -410,7 +413,8 @@ def infos():
     trim = 3
     for i in range(2, len(table) - 1):
         trim_column = [49, 16, 27, 38, 49]  # Номера столбцов с задолженностями
-        if str(table.loc[i][2]) != "STOP" and str(table.loc[i][2]) != "EXPIRAT":
+        if str(table.loc[i][2]) != "STOP" and str(
+                table.loc[i][2]) != "EXPIRAT":
             if str(table.loc[i][trim_column[trim]]) != 'nan' and int(
                     table.loc[i][trim_column[trim]]) > 0:
                 result = search_SA(str(table.loc[i][1]))
